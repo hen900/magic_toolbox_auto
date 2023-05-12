@@ -30,13 +30,14 @@ def main():
     # Mins on length are set by skywater and this prevents any permutation from violating them
     l_mins=[.15,.5] 
    
-    # Everything below is to match naming convention according to parameters  
+    # Everything below is to match naming convention according to skywater parameters  
     mos_ = ["sky130_fd_pr__pfet_","sky130_fd_pr__nfet_"]
     CELL_mos_names = ["pmos","nmos"]
     GDS_mos_names = ["PMOS","NMOS" ]
     CELL_v_names= ["_1_8V_","_5V_"] 
-   
     GDS_v_names= ["_1_8_", "_5"]
+    
+    #A directory containing generated transistors in labeled DAY_HOUR_MINITE_gen_Q
     now = datetime.datetime.now()
     Q_dir =  str(now.day) + "_" + str(now.hour) + "_" +str(now.minute) + "_gen_Q"
     os.system("mkdir " + Q_dir)
@@ -47,7 +48,6 @@ def main():
 
     # Skywater voltage naming convention
     voltages = ["01v8", "g5v0d10v5"] 
-
 
     # Running through all type,voltage and length parameters provived ( excluding lengths that are too small)
     
@@ -116,7 +116,7 @@ def main():
                       # ...........................................................................................
        
                       # Uncomment the following line if you want to execute the shell script and generate gds files
-                      # Otherwise the commands will only be generated, not run
+                      # Otherwise the magic commands will only be generated, not run
 
                       os.system("bash /tmp/magic_commands")
 
