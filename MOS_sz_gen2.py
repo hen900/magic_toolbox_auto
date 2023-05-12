@@ -29,7 +29,8 @@ def main():
     
     # Mins on length are set by skywater and this prevents any permutation from violating them
     l_mins=[.15,.5] 
-   
+    # Note: minimums for 5V and 1.8V devices are not the same
+    
     # Everything below is to match naming convention according to skywater parameters  
     mos_ = ["sky130_fd_pr__pfet_","sky130_fd_pr__nfet_"]
     CELL_mos_names = ["pmos","nmos"]
