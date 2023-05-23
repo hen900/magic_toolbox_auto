@@ -32,15 +32,16 @@ def main():
     # Note: minimums for 5V and 1.8V devices are not the same
 
     # Everything below is to match naming convention according to skywater parameters
-    mos_ = ["sky130_fd_pr__pfet_","sky130_fd_pr__nfet_"]
-    CELL_mos_names = ["pmos","nmos"]
-    GDS_mos_names = ["PMOS","NMOS" ]
-    CELL_v_names= ["_1_8V_","_5V_"]
-    GDS_v_names= ["_1_8_", "_5"]
+    sky_mos_names = ["sky130_fd_pr__pfet","sky130_fd_pr__nfet"]
+    mos_types = ["pmos","nmos"]
+    
+    #These depend on how you want the output gds named
+    gds_mos_names = ["PMOS","NMOS" ]
+    gds_voltage_names= ["_1_8_", "_5"]
 
     #A directory containing generated transistors in labeled DAY_HOUR_MINITE_gen_Q
     now = datetime.datetime.now()
-    Q_dir =  str(now.day) + "_" + str(now.hour) + "_" +str(now.minute) + "_gen_Q"
+    created_dir_name =  str(now.day) + "_" + str(now.hour) + "_" +str(now.minute) + "_gen_Q"
     os.system("mkdir "+ Q_dir)
 
     # The compatibility parameter is defined by skywater and has default values for pmos and nmos below
@@ -48,12 +49,12 @@ def main():
     compats= ["sky130_fd_pr__pfet_01v8 sky130_fd_pr__pfet_01v8_lvt sky130_fd_pr__pfet_01v8_hvt sky130_fd_pr__pfet_g5v0d10v5","sky130_fd_pr__nfet_01v8 sky130_fd_pr__nfet_01v8_lvt sky130_fd_bs_flash__special_sonosfet_star sky130_fd_pr__nfet_g5v0d10v5 sky130_fd_pr__nfet_05v0_nvt sky130_fd_pr__nfet_03v3_nvt"]
 
     # Skywater voltage naming convention
-    voltages = ["01v8", "g5v0d10v5"]
+    sky_voltage_names = ["01v8", "g5v0d10v5"]
 
     # Running through all type,voltage and length parameters provived ( excluding lengths that are too small)
 
-    for m in range(len(mos_)):
-        for v in range(len(voltages)):
+    for m in range(len(mos_types)):
+        for v in range(len(sky_voltages)):
             for ll in range(len(lengs)):
                 if (lengs[ll] >= l_mins[v]):
                   for ww in range(len(wids)):
@@ -91,46 +92,45 @@ def main():
                           f.write("dict set par viagt 0\n")
                       f.close()
 
-                      # Meaurements are expected in nm
+                      # Meaurements are converted to um
                       rescaled_w=str(int(wids[ww]*100))
                       rescaled_l=str(int(lengs[ll]*100))
+                        
+                      # The names of the the top and subcell
+                      # In this case the topcell is named something like "w2000_l100_nmos"
+                      # In this case the bottom cell is named something like "sky130_fd_pr__nfet_g5v0d10v5"
+                    
+                      topcell_name = "w" + rescaled_w + "_l" + rescaled_l + "_" + mos_types[m]
+                      subcell_name = sky_mos_names[m] + sky_voltage_names[v]
+                    
+                      os.system("mkdir " + created_dir_name)
+                    
+                      # gds_name refers to the naming convention you want, in this case it is something like "W42_L15_NMOS_1_8_.gds"
+                      gds_name = created_dir + "/" + "W" + rescaled_w + "_L" + rescaled_l + "_"+ gds_mos_names[m] + gds_voltage_names[v]+ ".gds"
 
-                      renamed_cell = "w" + rescaled_w+ "_l" + rescaled_l+ CELL_v_names[v] + CELL_mos_names[m]
-                      os.system("mkdir " + Q_dir + "/" + renamed_cell)
-                      gds_name = Q_dir + "/" + "renamed_cell/" "W" + rescaled_w + "_L" + rescaled_l + "_"+ GDS_mos_names[m] + GDS_v_names[v]+ ".gds"
-                      mag_name = Q_dir + "/" + "renamed_cell/" "W" + rescaled_w + "_L" + rescaled_l + "_"+ GDS_mos_names[m] + GDS_v_names[v]+ ".mag"
 
-                     # The renamed cell naming convention is arbitrary and user defined
-                      device_name = mos_[m] + voltages[v]
-                      print(device_name)
                       # Temporary shell script of commands needed to run the tcl with skywater technology
                       with open("/tmp/magic_commands", "w") as c:
                           c.write("magic -T " + pdk_path + "/sky130A.tech" + " -rcfile " + rc_path + " -dnull -noconsole <<EOF\n")
                           c.write("source " + pdk_path + "/sky130A.tcl \n")
                           c.write("source /tmp/stored_params \n")
-                          c.write("cellname rename (UNNAMED) " + renamed_cell + "\n")
-                          c.write("sky130::" + device_name+ "_draw \\$par\n" )
+                          c.write("cellname rename (UNNAMED) " + topcell_name + "\n")
+                          c.write("load " + topcell_name + "\n")
+                          c.write("cellname create " + subcell_name + "\n")
+                          c.write("getcell " + subcell_name  + "\n")
+                          c.write("select " + subcell_name + "\n")
+                          c.write("sky130::" + subcell_name+ "_draw \\$par\n" )
                           c.write("gds write " + gds_name + "\n")
-                          c.write("grid [.001 [.001 [59.79 -117.0]")
-                          c.write("save " + mag_name + "\n")
                           c.write("exit\n")
                           c.write("EOF\n")
                       c.close()
 
-                      # ...........................................................................................
-
-                      # Uncomment the following line if you want to execute the shell script and generate gds files
-                      # Otherwise the magic commands will only be generated, not run
 
                       os.system("bash /tmp/magic_commands")
 
                 else:
-                      print("#######################Size Violation######################## :" + device_name)
+                      print("#######################Size Violation######################## :" + topcell_name)
 
-cp -R ebl_mag_path Q_dir + "/1T1R_EBL_Framework_" + renamed_cell
-Expects provided EBL magic dir to have xmos of x size
-"find " + Q_dir +  " -name "123*.txt" -exec rename 's/^123_//' {} ";""
-"find " + Q_dir + " -type f -exec sed -i 's/old_string/new_string/gI' {} \;"
                      # ...........................................................................................
 
 if __name__ == "__main__":
