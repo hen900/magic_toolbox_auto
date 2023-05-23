@@ -42,7 +42,7 @@ def main():
     #A directory containing generated transistors in labeled DAY_HOUR_MINITE_gen_Q
     now = datetime.datetime.now()
     created_dir_name =  str(now.day) + "_" + str(now.hour) + "_" +str(now.minute) + "_gen_Q"
-    os.system("mkdir "+ Q_dir)
+    os.system("mkdir "+ created_dir_name)
 
     # The compatibility parameter is defined by skywater and has default values for pmos and nmos below
     # (Most likely not being redefined by user)
