@@ -24,7 +24,7 @@ def main():
     # Length parameters for both nmos and pmos (set by user in microns)
     lengs = [.15,.5,1]
 
-    # Width paramereters for both nmos and pmos (set by in microns)
+    # Width parameters for both nmos and pmos (set by in microns)
     wids = [.42,1,3,20]
 
     # Mins on length are set by skywater and this prevents any permutation from violating them
