@@ -34,4 +34,4 @@ An example of the naming convention **defined by skywater** for **device names**
 - sky130_fd_pr__pfet_01v8
 
 The naming convention is best outlined by skywater's own docs here: https://skywater-pdk.readthedocs.io/en/main/rules/device-details.html
-![image](https://github.com/hen900/magic_toolbox_auto/assets/25012642/b22ad74e-c656-43dd-a8f5-a9e43a522ffa)
+
