@@ -28,7 +28,7 @@ An example of the naming convention used for the **GDS filenames*** is:
 
 - W42_L50_NMOS_1_8_.gds
 
-This is a 1.8V NMOS of width 42 microns and length 50 microns. Any convetntion could be used here according to user preference.
+This is a 1.8V NMOS of width 42 microns and length 50 microns. Any convention could be used here according to user preference.
 
 An example of the naming convention **defined by skywater** for **device names** is:
 - sky130_fd_pr__pfet_01v8
