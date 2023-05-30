@@ -120,6 +120,8 @@ def main():
                           c.write("select " + subcell_name + "\n")
                           c.write("sky130::" + subcell_name+ "_draw \\$par\n" )
                           c.write("gds write " + gds_name + "\n")
+                          c.write("save"\n")
+
                           c.write("exit\n")
                           c.write("EOF\n")
                       c.close()
