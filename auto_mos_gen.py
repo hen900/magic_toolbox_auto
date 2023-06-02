@@ -34,7 +34,7 @@ def main():
     # Everything below is to match naming convention according to skywater parameters
     sky_mos_names = ["sky130_fd_pr__pfet","sky130_fd_pr__nfet"]
     mos_types = ["pmos","nmos"]
-    
+
     #These depend on how you want the output gds named
     gds_mos_names = ["PMOS","NMOS" ]
     gds_voltage_names= ["_1_8_", "_5"]
@@ -95,15 +95,15 @@ def main():
                       # Meaurements are converted to um
                       rescaled_w=str(int(wids[ww]*100))
                       rescaled_l=str(int(lengs[ll]*100))
-                        
+
                       # The names of the the top and subcell
                       # In this case the topcell is named something like "w2000_l100_nmos"
                       # In this case the bottom cell is named something like "sky130_fd_pr__nfet_g5v0d10v5"
-                    
+
                       topcell_name = "w" + rescaled_w + "_l" + rescaled_l + "_" + mos_types[m]
                       subcell_name = sky_mos_names[m] +"_" +  sky_voltage_names[v]
-                    
-                    
+
+
                       # gds_name refers to the naming convention you want, in this case it is something like "W42_L15_NMOS_1_8_.gds"
                       gds_name = created_dir_name + "/" + "W" + rescaled_w + "_L" + rescaled_l + "_"+ gds_mos_names[m] + gds_voltage_names[v]+ ".gds"
 
@@ -120,8 +120,7 @@ def main():
                           c.write("select " + subcell_name + "\n")
                           c.write("sky130::" + subcell_name+ "_draw \\$par\n" )
                           c.write("gds write " + gds_name + "\n")
-                          c.write("save"\n")
-
+                          c.write("save\n")
                           c.write("exit\n")
                           c.write("EOF\n")
                       c.close()
