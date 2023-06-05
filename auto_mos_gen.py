@@ -117,7 +117,7 @@ def main():
                           c.write("load " + topcell_name + "\n")
                           c.write("cellname create " + subcell_name + "\n")
                           c.write("getcell " + subcell_name  + "\n")
-                          c.write("select " + subcell_name + "\n")
+                          c.write("load " + subcell_name + "\n")
                           c.write("sky130::" + subcell_name+ "_draw \\$par\n" )
                           c.write("gds write " + gds_name + "\n")
                           c.write("save\n")
