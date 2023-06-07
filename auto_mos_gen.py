@@ -116,6 +116,7 @@ def main():
                           c.write("cellname rename (UNNAMED) " + topcell_name + "\n")
                           c.write("load " + topcell_name + "\n")
                           c.write("cellname create " + subcell_name + "\n")
+                          c.write("edit " + "\n")
                           c.write("getcell " + subcell_name  + "\n")
                           c.write("load " + subcell_name + "\n")
                           c.write("sky130::" + subcell_name+ "_draw \\$par\n" )
